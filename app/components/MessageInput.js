@@ -1,30 +1,22 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-
 import { enhancePromptWithAI } from "../utils/api";
 
-interface MessageInputProps {
-  onSend: (text: string, files?: { name: string; content: string }[]) => void;
-  isLoading: boolean;
-  isEmptySession: boolean;
-  apiKey: string;
-}
-
-export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey }: MessageInputProps) {
+export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey }) {
   const [text, setText] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
-  const [recognition, setRecognition] = useState<any>(null);
-  const [selectedFiles, setSelectedFiles] = useState<{ name: string; type: string; content?: string; base64?: string }[]>([]);
-  const [particles, setParticles] = useState<{ id: number; x: number; y: number; r: number; delay: number; color: string }[]>([]);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [recognition, setRecognition] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [particles, setParticles] = useState([]);
+  const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   // Initialize Speech Recognition on client-side mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRecognition) {
         const rec = new SpeechRecognition();
         rec.continuous = false;
@@ -33,11 +25,11 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
 
         rec.onstart = () => setIsRecording(true);
         rec.onend = () => setIsRecording(false);
-        rec.onerror = (e: any) => {
+        rec.onerror = (e) => {
           console.error("Speech recognition error:", e);
           setIsRecording(false);
         };
-        rec.onresult = (event: any) => {
+        rec.onresult = (event) => {
           const transcript = event.results[0][0].transcript;
           setText((prev) => (prev ? prev + " " + transcript : transcript));
         };
@@ -46,7 +38,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
     }
   }, []);
 
-  const handleToggleRecording = (e: React.MouseEvent) => {
+  const handleToggleRecording = (e) => {
     e.preventDefault();
     if (!recognition) {
       alert("Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.");
@@ -71,7 +63,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
     textarea.style.height = `${Math.min(scrollHeight, 180)}px`;
   }, [text]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e) => {
     const files = e.target.files;
     if (!files) return;
 
@@ -88,7 +80,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
       
       if (isImage) {
         reader.onload = (event) => {
-          const dataUrl = event.target?.result as string;
+          const dataUrl = event.target?.result;
           const base64Parts = dataUrl.split(";base64,");
           if (base64Parts.length === 2) {
             const base64 = base64Parts[1];
@@ -101,7 +93,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
         reader.readAsDataURL(file);
       } else {
         reader.onload = (event) => {
-          const content = event.target?.result as string;
+          const content = event.target?.result;
           setSelectedFiles((prev) => [
             ...prev,
             { name: file.name, type: file.type, content }
@@ -128,7 +120,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
     setTimeout(() => setParticles([]), 1200);
   };
 
-  const handleEnhance = async (e: React.MouseEvent) => {
+  const handleEnhance = async (e) => {
     e.preventDefault();
     if (text.trim() === "" || isEnhancing) return;
 
@@ -144,7 +136,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
     }
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e?.preventDefault();
     if (text.trim() === "" && selectedFiles.length === 0) return;
     if (isLoading) return;
@@ -159,7 +151,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
     }, 50);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
@@ -263,7 +255,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
                     "--tw-part-x": `${p.x}px`,
                     "--tw-part-y": `${p.y}px`,
                     "--tw-part-r": `${p.r}deg`,
-                  } as React.CSSProperties}
+                  }}
                 >
                   <path d="M9.813 15.904 9 21l-.813-5.096L3 15l5.096-.813L9 9l.813 5.187L15 15l-5.187.904Z" />
                 </svg>

@@ -1,28 +1,18 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { Message, ToneType, WordLimitType } from "../utils/api";
-
-interface MessageListProps {
-  messages: Message[];
-  isLoading: boolean;
-  activeTone: ToneType;
-  activeLimit: WordLimitType;
-  onOpenWorkspace?: (title: string, content: string, language: string) => void;
-  onEditMessage?: (msgId: string, newText: string) => void;
-}
 
 // A robust client-side markdown formatter that handles titles, bold text, code blocks, lists, and line breaks
-function parseMarkdown(text: string, onOpenWorkspace?: (title: string, content: string, language: string) => void): React.ReactNode[] {
+function parseMarkdown(text, onOpenWorkspace) {
   if (!text) return [];
 
   const lines = text.split("\n");
-  const parsedElements: React.ReactNode[] = [];
-  let codeBlockContent: string[] = [];
+  const parsedElements = [];
+  let codeBlockContent = [];
   let inCodeBlock = false;
   let codeBlockLang = "";
 
-  const renderTextFormatting = (rawText: string) => {
+  const renderTextFormatting = (rawText) => {
     // Basic bold **text** parsing
     const parts = rawText.split(/\*\*([^*]+)\*\*/g);
     return parts.map((part, index) => {
@@ -167,7 +157,7 @@ function parseMarkdown(text: string, onOpenWorkspace?: (title: string, content: 
 }
 
 // Copy Code Helper Button
-function CopyCodeButton({ text }: { text: string }) {
+function CopyCodeButton({ text }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -199,7 +189,7 @@ function CopyCodeButton({ text }: { text: string }) {
 }
 
 // Copy Message Bubble Helper Button
-function CopyMessageButton({ text }: { text: string }) {
+function CopyMessageButton({ text }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -226,7 +216,7 @@ function CopyMessageButton({ text }: { text: string }) {
 }
 
 // Speak Message Bubble Helper Button using Text-to-Speech Web Speech API
-function SpeakMessageButton({ text, isSpeaking, onSpeak }: { text: string; isSpeaking: boolean; onSpeak: () => void }) {
+function SpeakMessageButton({ text, isSpeaking, onSpeak }) {
   return (
     <button
       onClick={onSpeak}
@@ -250,11 +240,11 @@ function SpeakMessageButton({ text, isSpeaking, onSpeak }: { text: string; isSpe
   );
 }
 
-export default function MessageList({ messages, isLoading, activeTone, activeLimit, onOpenWorkspace, onEditMessage }: MessageListProps) {
-  const [speakingMsgId, setSpeakingMsgId] = useState<string>("");
-  const [editingMsgId, setEditingMsgId] = useState<string>("");
-  const [editingText, setEditingText] = useState<string>("");
-  const bottomRef = useRef<HTMLDivElement>(null);
+export default function MessageList({ messages, isLoading, activeTone, activeLimit, onOpenWorkspace, onEditMessage }) {
+  const [speakingMsgId, setSpeakingMsgId] = useState("");
+  const [editingMsgId, setEditingMsgId] = useState("");
+  const [editingText, setEditingText] = useState("");
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     // Cleanup speak synthesis on unmount
@@ -265,7 +255,7 @@ export default function MessageList({ messages, isLoading, activeTone, activeLim
     };
   }, []);
 
-  const handleSpeak = (msgId: string, text: string) => {
+  const handleSpeak = (msgId, text) => {
     if (speakingMsgId === msgId) {
       window.speechSynthesis.cancel();
       setSpeakingMsgId("");
@@ -321,7 +311,7 @@ export default function MessageList({ messages, isLoading, activeTone, activeLim
           </div>
           <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-4 dark:border-zinc-800/85 dark:bg-zinc-900/30">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-pink-50 text-pink-600 dark:bg-pink-950/40 dark:text-pink-400 mb-2.5">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4 w-4">
+              <svg xmlns="http://www.w3.org/2050/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4 w-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
             </span>
@@ -373,7 +363,7 @@ export default function MessageList({ messages, isLoading, activeTone, activeLim
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                   </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400">
+                  <svg xmlns="http://www.w3.org/2050/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 21l-.813-5.096L3 15l5.096-.813L9 9l.813 5.187L15 15l-5.187.904Z" />
                   </svg>
                 )}
@@ -407,7 +397,7 @@ export default function MessageList({ messages, isLoading, activeTone, activeLim
                           <textarea
                             value={editingText}
                             onChange={(e) => setEditingText(e.target.value)}
-                            className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-500 font-sans resize-y min-h-[70px]"
+                            className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-955 px-3 py-2 text-sm text-zinc-800 dark:text-zinc-205 focus:outline-none focus:ring-1 focus:ring-purple-500 font-sans resize-y min-h-[70px]"
                             placeholder="Edit your message..."
                           />
                           <div className="flex gap-2 justify-end">

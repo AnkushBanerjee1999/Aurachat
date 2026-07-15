@@ -2,17 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-interface WorkspaceProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  content: string;
-  language: string;
-  onSave: (newContent: string) => void;
-  onAIEdit: (instruction: string) => Promise<void>;
-  isAIEditing: boolean;
-}
-
 export default function Workspace({
   isOpen,
   onClose,
@@ -22,11 +11,11 @@ export default function Workspace({
   onSave,
   onAIEdit,
   isAIEditing,
-}: WorkspaceProps) {
+}) {
   const [editorText, setEditorText] = useState(content);
   const [aiInstruction, setAiInstruction] = useState("");
   const [copied, setCopied] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef(null);
 
   // Sync state when content changes from the outside
   useEffect(() => {
@@ -35,7 +24,7 @@ export default function Workspace({
 
   if (!isOpen) return null;
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextChange = (e) => {
     setEditorText(e.target.value);
     onSave(e.target.value);
   };
@@ -70,7 +59,7 @@ export default function Workspace({
     document.body.removeChild(link);
   };
 
-  const handleAISubmit = (e: React.FormEvent) => {
+  const handleAISubmit = (e) => {
     e.preventDefault();
     if (aiInstruction.trim() === "" || isAIEditing) return;
     onAIEdit(aiInstruction.trim());
@@ -122,7 +111,7 @@ export default function Workspace({
             title="Copy Workspace"
           >
             {copied ? (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4 w-4 text-emerald-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4 w-4 text-emerald-450">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
               </svg>
             ) : (
@@ -188,7 +177,7 @@ export default function Workspace({
 
           {/* AI Editing Overlay Shimmer */}
           {isAIEditing && (
-            <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-xs flex flex-col items-center justify-center animate-pulse">
+            <div className="absolute inset-0 bg-zinc-955/80 backdrop-blur-xs flex flex-col items-center justify-center animate-pulse">
               <div className="flex items-center gap-2">
                 <svg className="animate-spin h-5 w-5 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -232,7 +221,7 @@ export default function Workspace({
             className={`flex h-7 px-3 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold shadow-md transition-all duration-200 ${
               aiInstruction.trim() === "" || isAIEditing
                 ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-750 text-white cursor-pointer active:scale-95"
+                : "bg-purple-600 hover:bg-purple-755 text-white cursor-pointer active:scale-95"
             }`}
           >
             Refactor

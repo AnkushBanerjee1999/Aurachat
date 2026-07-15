@@ -1,18 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ToneType, WordLimitType, DEFAULT_DUMMY_KEY } from "../utils/api";
-
-interface HeaderProps {
-  tone: ToneType;
-  setTone: (tone: ToneType) => void;
-  wordLimit: WordLimitType;
-  setWordLimit: (limit: WordLimitType) => void;
-  apiKey: string;
-  setApiKey: (key: string) => void;
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-}
+import { DEFAULT_DUMMY_KEY } from "../utils/api";
 
 export default function Header({
   tone,
@@ -23,7 +12,7 @@ export default function Header({
   setApiKey,
   sidebarOpen,
   setSidebarOpen,
-}: HeaderProps) {
+}) {
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [inputKey, setInputKey] = useState(apiKey);
   const [isSaved, setIsSaved] = useState(false);
@@ -107,7 +96,7 @@ export default function Header({
             </label>
             <select
               value={tone}
-              onChange={(e) => setTone(e.target.value as ToneType)}
+              onChange={(e) => setTone(e.target.value)}
               className="h-8 sm:h-9 rounded-lg border border-zinc-200 bg-zinc-50 px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-medium text-zinc-700 outline-none hover:border-zinc-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-700 dark:focus:border-purple-400 dark:focus:ring-purple-400 transition-all duration-200 cursor-pointer"
             >
               <option value="Short">Short</option>
@@ -123,7 +112,7 @@ export default function Header({
             </label>
             <select
               value={wordLimit}
-              onChange={(e) => setWordLimit(e.target.value as WordLimitType)}
+              onChange={(e) => setWordLimit(e.target.value)}
               className="h-8 sm:h-9 rounded-lg border border-zinc-200 bg-zinc-50 px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-medium text-zinc-700 outline-none hover:border-zinc-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-700 dark:focus:border-purple-400 dark:focus:ring-purple-400 transition-all duration-200 cursor-pointer"
             >
               <option value="15">15 Words</option>

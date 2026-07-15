@@ -1,18 +1,7 @@
-export interface Message {
-  id: string;
-  role: "user" | "model";
-  content: string;
-  timestamp: Date;
-  files?: { name: string; content?: string; type: string; base64?: string }[];
-}
-
-export type ToneType = "Short" | "Professional" | "Detailed";
-export type WordLimitType = "15" | "30" | "unlimited";
-
 export const DEFAULT_DUMMY_KEY = "[ENCRYPTION_KEY]";
 
 // High-quality mock response generator when API key is a dummy key
-function getMockResponse(prompt: string, tone: ToneType, wordLimit: WordLimitType): string {
+function getMockResponse(prompt, tone, wordLimit) {
   const shortResponses = [
     "Here is your short answer. Please provide a valid Gemini API key for live responses.",
     "This is a mocked short answer confirming that the chat system is fully functional.",
@@ -53,7 +42,7 @@ Feel free to ask another question or configure your live key to get started!`,
   ];
 
   // Helper to enforce word limit approximately for mock answers
-  const truncateWords = (text: string, limit: number): string => {
+  const truncateWords = (text, limit) => {
     const words = text.split(/\s+/);
     if (words.length <= limit) return text;
     return words.slice(0, limit).join(" ") + "...";
@@ -78,12 +67,12 @@ Feel free to ask another question or configure your live key to get started!`,
 }
 
 export async function callGeminiAPI(
-  messages: Message[],
-  tone: ToneType,
-  wordLimit: WordLimitType,
-  apiKey: string,
-  onChunk?: (text: string) => void
-): Promise<string> {
+  messages,
+  tone,
+  wordLimit,
+  apiKey,
+  onChunk
+) {
   const currentKey = apiKey || DEFAULT_DUMMY_KEY;
 
   // Check if it's a dummy key
@@ -153,10 +142,10 @@ Respond using the following constraints:
       !m.content.startsWith("⚠️")
   );
 
-  const apiContents: { role: "user" | "model"; parts: { text?: string; inlineData?: { mimeType: string; data: string } }[] }[] = [];
+  const apiContents = [];
 
   for (const m of filteredMessages) {
-    const parts: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [];
+    const parts = [];
 
     // First, process any image files as inlineData parts
     if (m.role === "user" && m.files && m.files.length > 0) {
@@ -221,7 +210,7 @@ Respond using the following constraints:
   }
 
   const modelsToTry = ["gemini-3.5-flash", "gemini-2.0-flash", "gemini-3.1-flash-lite"];
-  let lastError: Error | null = null;
+  let lastError = null;
 
   for (const model of modelsToTry) {
     try {
@@ -290,7 +279,7 @@ Respond using the following constraints:
                     onChunk(textChunk);
                   }
                 } catch (e) {
-                  // Silent catch for non-matching chunks (e.g., streaming framing metadata)
+                  // Silent catch for non-matching chunks
                 }
                 buffer = buffer.slice(i + 1);
                 i = -1;
@@ -314,7 +303,7 @@ Respond using the following constraints:
       }
 
       return reply;
-    } catch (error: any) {
+    } catch (error) {
       console.warn(`Gemini model ${model} failed:`, error.message);
       lastError = error;
     }
@@ -328,7 +317,7 @@ Respond using the following constraints:
 }
 
 // Enhance a raw prompt using the Gemini API
-export async function enhancePromptWithAI(rawPrompt: string, apiKey: string): Promise<string> {
+export async function enhancePromptWithAI(rawPrompt, apiKey) {
   const currentKey = apiKey || DEFAULT_DUMMY_KEY;
 
   // Mock prompt enhancement if dummy key is used
@@ -346,7 +335,7 @@ export async function enhancePromptWithAI(rawPrompt: string, apiKey: string): Pr
   const systemInstruction = "You are a prompt engineering specialist. The user will provide a simple topic or request. Rewrite it to be clear, highly detailed, well-structured, and optimized for an LLM generator. Do not change the core intent. Return ONLY the final polished prompt text, without any introductory or concluding remarks, explanations, or quotes.";
 
   const modelsToTry = ["gemini-3.5-flash", "gemini-2.0-flash", "gemini-3.1-flash-lite"];
-  let lastError: Error | null = null;
+  let lastError = null;
 
   for (const model of modelsToTry) {
     try {
@@ -376,7 +365,7 @@ export async function enhancePromptWithAI(rawPrompt: string, apiKey: string): Pr
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!reply) throw new Error("Invalid response format.");
       return reply.trim();
-    } catch (err: any) {
+    } catch (err) {
       console.warn(`AI prompt enhancement failed on model ${model}:`, err.message);
       lastError = err;
     }

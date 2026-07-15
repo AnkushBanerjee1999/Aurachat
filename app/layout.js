@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,7 +11,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "AuraChat - Premium Gemini AI Companion",
   description: "Experience a state-of-the-art AI assistant powered by Google Gemini, equipped with voice synthesis, prompt engineering magic, responsive workspace integration, and real-time response streaming.",
   icons: {
@@ -20,11 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }) {
   return (
     <html
       lang="en"

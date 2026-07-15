@@ -1,28 +1,6 @@
 "use client";
 
 import React, { useRef } from "react";
-import { ToneType, WordLimitType, Message } from "../utils/api";
-
-export interface ChatSession {
-  id: string;
-  title: string;
-  messages: Message[];
-  tone: ToneType;
-  wordLimit: WordLimitType;
-  createdAt: string;
-}
-
-interface SidebarProps {
-  sessions: ChatSession[];
-  activeSessionId: string;
-  onSelectSession: (id: string) => void;
-  onCreateSession: () => void;
-  onDeleteSession: (id: string) => void;
-  onClearAll: () => void;
-  onRestoreSessions: (restored: ChatSession[]) => void;
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}
 
 export default function Sidebar({
   sessions,
@@ -34,8 +12,8 @@ export default function Sidebar({
   onRestoreSessions,
   isOpen,
   setIsOpen,
-}: SidebarProps) {
-  const restoreInputRef = useRef<HTMLInputElement>(null);
+}) {
+  const restoreInputRef = useRef(null);
 
   // Export current chat conversation as clean Markdown
   const handleExportMarkdown = () => {
@@ -94,14 +72,14 @@ export default function Sidebar({
   };
 
   // Restore sessions from backup JSON
-  const handleRestoreJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRestoreJSON = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const parsed = JSON.parse(event.target?.result as string);
+        const parsed = JSON.parse(event.target?.result);
         if (
           Array.isArray(parsed) &&
           parsed.every((s) => s.id && s.title && Array.isArray(s.messages))
@@ -336,7 +314,7 @@ export default function Sidebar({
             <div className="flex gap-1.5">
               <button
                 onClick={handleBackupJSON}
-                className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white dark:bg-zinc-900 px-2 py-1.5 text-[10px] font-semibold text-zinc-600 hover:bg-zinc-100 hover:text-zinc-800 dark:border-zinc-850 dark:text-zinc-400 dark:hover:bg-zinc-800/80 dark:hover:text-zinc-200 transition-all cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white dark:bg-zinc-900 px-2 py-1.5 text-[10px] font-semibold text-zinc-650 hover:bg-zinc-100 hover:text-zinc-800 dark:border-zinc-850 dark:text-zinc-400 dark:hover:bg-zinc-800/80 dark:hover:text-zinc-200 transition-all cursor-pointer"
                 title="Backup all chats as JSON"
               >
                 Backup JSON
@@ -344,7 +322,7 @@ export default function Sidebar({
 
               <button
                 onClick={() => restoreInputRef.current?.click()}
-                className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white dark:bg-zinc-900 px-2 py-1.5 text-[10px] font-semibold text-zinc-600 hover:bg-zinc-100 hover:text-zinc-800 dark:border-zinc-850 dark:text-zinc-400 dark:hover:bg-zinc-800/80 dark:hover:text-zinc-200 transition-all cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white dark:bg-zinc-900 px-2 py-1.5 text-[10px] font-semibold text-zinc-650 hover:bg-zinc-100 hover:text-zinc-800 dark:border-zinc-850 dark:text-zinc-400 dark:hover:bg-zinc-800/80 dark:hover:text-zinc-200 transition-all cursor-pointer"
                 title="Restore chats from JSON file"
               >
                 Restore JSON

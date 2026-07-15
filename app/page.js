@@ -1,23 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Sidebar, { ChatSession } from "./components/Sidebar";
+import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import Workspace from "./components/Workspace";
-import { Message, ToneType, WordLimitType, callGeminiAPI, DEFAULT_DUMMY_KEY } from "./utils/api";
-import { Joyride, Step } from "react-joyride";
+import { callGeminiAPI, DEFAULT_DUMMY_KEY } from "./utils/api";
+import { Joyride } from "react-joyride";
 
 export default function Home() {
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [activeSessionId, setActiveSessionId] = useState<string>("");
-  const [tone, setTone] = useState<ToneType>("Short");
-  const [wordLimit, setWordLimit] = useState<WordLimitType>("30");
-  const [apiKey, setApiKey] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
-  const [mounted, setMounted] = useState<boolean>(false);
+  const [sessions, setSessions] = useState([]);
+  const [activeSessionId, setActiveSessionId] = useState("");
+  const [tone, setTone] = useState("Short");
+  const [wordLimit, setWordLimit] = useState("30");
+  const [apiKey, setApiKey] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // Workspace States
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
@@ -29,7 +29,7 @@ export default function Home() {
   // Tour States & Steps
   const [runTour, setRunTour] = useState(false);
 
-  const tourSteps: Step[] = [
+  const tourSteps = [
     {
       target: "body",
       content: "Welcome to AuraChat! Let's take a quick 1-minute tour of your new AI assistant playground.",
@@ -109,7 +109,7 @@ export default function Home() {
     },
   ];
 
-  const handleTourCallback = (data: any) => {
+  const handleTourCallback = (data) => {
     const { status, type, action } = data;
     if (
       ["finished", "skipped"].includes(status) ||
@@ -156,10 +156,10 @@ export default function Home() {
     setApiKey(savedKey);
 
     // Load Settings
-    const savedTone = localStorage.getItem("aura_chat_default_tone") as ToneType;
+    const savedTone = localStorage.getItem("aura_chat_default_tone");
     if (savedTone) setTone(savedTone);
 
-    const savedLimit = localStorage.getItem("aura_chat_default_limit") as WordLimitType;
+    const savedLimit = localStorage.getItem("aura_chat_default_limit");
     if (savedLimit) setWordLimit(savedLimit);
 
     // Load Chat Sessions
@@ -187,7 +187,7 @@ export default function Home() {
   }, [sessions, mounted]);
 
   // Handle active session changes (sync header controls to the session's options)
-  const handleSelectSession = (sessionId: string) => {
+  const handleSelectSession = (sessionId) => {
     setActiveSessionId(sessionId);
     const session = sessions.find((s) => s.id === sessionId);
     if (session) {
@@ -197,7 +197,7 @@ export default function Home() {
   };
 
   // Sync settings modifications directly into active session settings
-  const handleToneChange = (newTone: ToneType) => {
+  const handleToneChange = (newTone) => {
     setTone(newTone);
     localStorage.setItem("aura_chat_default_tone", newTone);
     if (activeSessionId) {
@@ -207,7 +207,7 @@ export default function Home() {
     }
   };
 
-  const handleWordLimitChange = (newLimit: WordLimitType) => {
+  const handleWordLimitChange = (newLimit) => {
     setWordLimit(newLimit);
     localStorage.setItem("aura_chat_default_limit", newLimit);
     if (activeSessionId) {
@@ -220,7 +220,7 @@ export default function Home() {
   // Create a brand new chat session
   const createNewSession = () => {
     const newSessionId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const newSession: ChatSession = {
+    const newSession = {
       id: newSessionId,
       title: "New Conversation",
       messages: [],
@@ -235,7 +235,7 @@ export default function Home() {
   };
 
   // Delete a specific chat session
-  const deleteSession = (sessionId: string) => {
+  const deleteSession = (sessionId) => {
     setSessions((prev) => {
       const filtered = prev.filter((s) => s.id !== sessionId);
       if (activeSessionId === sessionId) {
@@ -261,7 +261,7 @@ export default function Home() {
   };
 
   // Restore sessions from backup JSON
-  const handleRestoreSessions = (restored: ChatSession[]) => {
+  const handleRestoreSessions = (restored) => {
     setSessions((prev) => {
       const prevIds = new Set(prev.map((s) => s.id));
       const filteredRestored = restored.filter((s) => !prevIds.has(s.id));
@@ -275,14 +275,14 @@ export default function Home() {
     }
   };
 
-  const handleOpenWorkspace = (title: string, content: string, language: string) => {
+  const handleOpenWorkspace = (title, content, language) => {
     setWorkspaceTitle(title);
     setWorkspaceContent(content);
     setWorkspaceLang(language);
     setWorkspaceOpen(true);
   };
 
-  const handleWorkspaceAIEdit = async (instruction: string) => {
+  const handleWorkspaceAIEdit = async (instruction) => {
     setIsWorkspaceLoading(true);
     try {
       const systemInstruction = "You are a professional code refactoring tool. The user will provide their current code or document content, and a refactoring request. Modify the code or document exactly as requested. Return ONLY the complete updated code or text content. Do NOT include markdown code blocks wrappers (such as ```javascript), introductory messages, concluding remarks, or explanations. Output the raw text of the document directly.";
@@ -290,7 +290,7 @@ export default function Home() {
       const payloadText = `[CURRENT DOCUMENT CONTENT]\n${workspaceContent}\n\n[REFACTOR REQUEST]\n${instruction}`;
       
       const modelsToTry = ["gemini-3.5-flash", "gemini-2.0-flash", "gemini-3.1-flash-lite"];
-      let lastError: Error | null = null;
+      let lastError = null;
       let replyText = "";
 
       for (const model of modelsToTry) {
@@ -335,7 +335,7 @@ export default function Home() {
 
           replyText = sanitized;
           break;
-        } catch (err: any) {
+        } catch (err) {
           console.warn(`Refactor request failed on model ${model}:`, err.message);
           lastError = err;
         }
@@ -346,7 +346,7 @@ export default function Home() {
       }
 
       setWorkspaceContent(replyText);
-    } catch (err: any) {
+    } catch (err) {
       alert(`Aura Workspace AI Refactoring failed: ${err.message}`);
     } finally {
       setIsWorkspaceLoading(false);
@@ -354,7 +354,7 @@ export default function Home() {
   };
 
   // Send a message
-  const handleSend = async (messageText: string, files?: { name: string; content: string }[]) => {
+  const handleSend = async (messageText, files) => {
     let currentSessionId = activeSessionId;
     let currentSessions = [...sessions];
 
@@ -364,7 +364,7 @@ export default function Home() {
     if (!currentSessionId) {
       currentSessionId = createNewSession();
       // Instantly structure a new local state for processing
-      const newSession: ChatSession = {
+      const newSession = {
         id: currentSessionId,
         title: displayTitle.length > 30 ? `${displayTitle.slice(0, 27)}...` : displayTitle,
         messages: [],
@@ -373,14 +373,13 @@ export default function Home() {
         createdAt: new Date().toISOString(),
       };
       currentSessions = [newSession];
-      // Note: setSessions is asynchronous, so we use currentSessions locally
     }
 
     const activeSession = currentSessions.find((s) => s.id === currentSessionId);
     if (!activeSession) return;
 
     // 2. Format User Message
-    const userMessage: Message = {
+    const userMessage = {
       id: `msg_${Date.now()}_user`,
       role: "user",
       content: messageText || (files && files.length > 0 ? `Attached: ${files.map(f => f.name).join(', ')}` : ""),
@@ -398,7 +397,7 @@ export default function Home() {
       : activeSession.title;
 
     const botMessageId = `msg_${Date.now()}_bot`;
-    const initialBotMessage: Message = {
+    const initialBotMessage = {
       id: botMessageId,
       role: "model",
       content: "",
@@ -456,9 +455,9 @@ export default function Home() {
             : s
         )
       );
-    } catch (error: any) {
+    } catch (error) {
       // Remove empty placeholder and render connection error bubble
-      const errorMessage: Message = {
+      const errorMessage = {
         id: `msg_${Date.now()}_error`,
         role: "model",
         content: `⚠️ **Connection Error**\n\n${error.message || "Failed to reach Google Gemini API. Please verify your internet connection or API Key."}`,
@@ -481,8 +480,9 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-    }
-  const handleEditMessage = async (msgId: string, newText: string) => {
+  };
+
+  const handleEditMessage = async (msgId, newText) => {
     const activeSession = sessions.find((s) => s.id === activeSessionId);
     if (!activeSession) return;
 
@@ -490,7 +490,7 @@ export default function Home() {
     if (messageIndex === -1) return;
 
     const originalMessage = activeSession.messages[messageIndex];
-    const editedUserMessage: Message = {
+    const editedUserMessage = {
       ...originalMessage,
       content: newText,
     };
@@ -509,7 +509,7 @@ export default function Home() {
       : activeSession.title;
 
     const botMessageId = `msg_${Date.now()}_bot`;
-    const initialBotMessage: Message = {
+    const initialBotMessage = {
       id: botMessageId,
       role: "model",
       content: "",
@@ -570,8 +570,8 @@ export default function Home() {
             : s
         )
       );
-    } catch (error: any) {
-      const errorMessage: Message = {
+    } catch (error) {
+      const errorMessage = {
         id: `msg_${Date.now()}_error`,
         role: "model",
         content: `⚠️ **Connection Error**\n\n${error.message || "Failed to reach Google Gemini API. Please verify your internet connection or API Key."}`,

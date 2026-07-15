@@ -12,5 +12,3 @@ Here is a summary of the features and enhancements implemented in the AuraChat a
 ##  Onboarding & Tour
 - **🗺️ First-Time Visitor Walkthrough**: Guided tour using `react-joyride` highlighting sidebar navigation, options, API configuration, wand, dictation, and backup tools.
 
-##  Responsive Header Controls
-- **📱 Mobile Optimization**: Select inputs resize, brand logo collapses, and API text labels hide on small screens to fit all controls on a single line.

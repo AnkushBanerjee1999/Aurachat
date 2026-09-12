@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AuraChat
+
+A premium AI chat assistant powered by Google Gemini with real-time response streaming, voice input, file uploads, and a built-in workspace editor.
+
+## Features
+
+- **Multi-Model Fallback** — Automatically tries multiple Gemini models for reliability
+- **Real-Time Streaming** — Responses stream word-by-word as they're generated
+- **Tone & Word Limit Controals** — Switch between Short, Professional, and Detailed tones with adjustable word limits
+- **Voice Input** — Dictate prompts using browser Speech Recognition
+- **File Uploads** — Attach images (PNG, JPG) or text/code files for AI analysis
+- **Prompt Enhancer** — Magic Wand button to auto-enhance simple prompts into detailed instructions
+- **Workspace Editor** — Split-screen code/text playground with AI-powered refactoring
+- **Session Management** — Multiple conversations with backup/restore and Markdown export
+- **Guided Tour** — First-time onboarding walkthrough for new users
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Key Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Get a free API key from [Google AI Studio](https://aistudio.google.com/apikey)
+2. Click the key icon in the header
+3. Paste your API key and save
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework:** Next.js 16 (App Router)
+- **Styling:** Tailwind CSS 4
+- **AI:** Google Gemini API
+- **Tour:** react-joyride

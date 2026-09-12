@@ -25,8 +25,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
 
         rec.onstart = () => setIsRecording(true);
         rec.onend = () => setIsRecording(false);
-        rec.onerror = (e) => {
-          console.error("Speech recognition error:", e);
+        rec.onerror = () => {
           setIsRecording(false);
         };
         rec.onresult = (event) => {
@@ -129,9 +128,7 @@ export default function MessageInput({ onSend, isLoading, isEmptySession, apiKey
       const enhancedText = await enhancePromptWithAI(text.trim(), apiKey);
       setText(enhancedText);
       triggerSparkles();
-    } catch (err) {
-      console.error("Failed to enhance prompt:", err);
-    } finally {
+    } catch (err) { /* silently fail */ } finally {
       setIsEnhancing(false);
     }
   };

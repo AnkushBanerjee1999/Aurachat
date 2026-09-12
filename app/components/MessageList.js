@@ -293,7 +293,7 @@ export default function MessageList({ messages, isLoading, activeTone, activeLim
           Say Hello to AuraChat
         </h2>
         <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-8 max-w-md">
-          A modular Next.js AI chat interface pre-equipped to generate styled responses using Google's Gemini LLM.
+          Your all-in-one AI assistant powered by Google Gemini — ask anything, explore any topic, and get beautifully styled responses.
         </p>
 
         {/* Info Grid */}

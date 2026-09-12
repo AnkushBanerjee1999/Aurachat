@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DEFAULT_DUMMY_KEY } from "../utils/api";
+
 
 export default function Header({
   tone,
@@ -27,8 +27,7 @@ export default function Header({
     }, 1500);
   };
 
-  const activeKey = apiKey || DEFAULT_DUMMY_KEY;
-  const isDemo = !activeKey || activeKey.toLowerCase().startsWith("dummy") || activeKey.trim() === "";
+  const isDemo = !apiKey || apiKey.trim() === "";
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-md dark:border-zinc-800/80 dark:bg-zinc-950/80 transition-colors duration-300">
@@ -181,7 +180,7 @@ export default function Header({
             </button>
           </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4 leading-relaxed">
-            Please enter your Google Gemini API key. If left blank or using a dummy key, the app will simulate realistic responses locally.
+            Enter your Google Gemini API key to enable live AI responses.
           </p>
           <div className="space-y-3">
             <div className="relative">

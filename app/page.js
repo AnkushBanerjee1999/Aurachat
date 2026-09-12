@@ -120,7 +120,6 @@ export default function Home() {
       try {
         localStorage.setItem("aura_chat_tour_completed", "true");
       } catch (err) {
-        console.warn("Storage write failed, using fallback:", err);
         try {
           sessionStorage.setItem("aura_chat_tour_completed", "true");
         } catch (e) {}
@@ -139,14 +138,12 @@ export default function Home() {
         setRunTour(true);
       }
     } catch (err) {
-      console.warn("Storage read failed, checking session storage fallback:", err);
       try {
         const hasCompletedTourSession = sessionStorage.getItem("aura_chat_tour_completed");
         if (!hasCompletedTourSession) {
           setRunTour(true);
         }
       } catch (e) {
-        // Safe fallback in case storage is entirely blocked
         setRunTour(false);
       }
     }
@@ -174,9 +171,7 @@ export default function Home() {
           setTone(parsed[0].tone);
           setWordLimit(parsed[0].wordLimit);
         }
-      } catch (e) {
-        console.error("Error loading chat history:", e);
-      }
+      } catch (e) { /* ignore corrupt data */ }
     }
   }, []);
 
@@ -289,7 +284,7 @@ export default function Home() {
       
       const payloadText = `[CURRENT DOCUMENT CONTENT]\n${workspaceContent}\n\n[REFACTOR REQUEST]\n${instruction}`;
       
-      const modelsToTry = ["gemini-3.5-flash", "gemini-2.0-flash", "gemini-3.1-flash-lite"];
+      const modelsToTry = ["gemini-2.0-flash", "gemini-2.0-flash-lite"];
       let lastError = null;
       let replyText = "";
 
@@ -336,7 +331,6 @@ export default function Home() {
           replyText = sanitized;
           break;
         } catch (err) {
-          console.warn(`Refactor request failed on model ${model}:`, err.message);
           lastError = err;
         }
       }

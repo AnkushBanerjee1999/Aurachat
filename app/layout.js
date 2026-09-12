@@ -29,8 +29,9 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning={true}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning={true}>
-        <PlausibleProvider src="https://aurachat-sry4.vercel.app/">
+        <PlausibleProvider src="https://analytics.staging.at16th.com/js/pa-v7pyI_koOis0GXDFr1Z5Z.js" init={{ captureOnLocalhost: true }}>
           {children}  
+
           </PlausibleProvider>
 </body>
     </html>
